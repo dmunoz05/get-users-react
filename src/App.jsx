@@ -1,13 +1,18 @@
-import { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/card";
 import { Badge } from "@ui/badge";
 import { Mail, MapPin, Phone, Globe } from "lucide-react";
-import UserListMicroFrontend from "@components/user-list.jsx";
 import ImgUser from "@assets/img-user.jpg";
 import "./App.css";
 
 export default function App() {
   const [selectedUser, setSelectedUser] = useState();
+
+  const UserListMicroFrontend = React.lazy(() =>
+    new Promise(resolve => {
+      setTimeout(() => resolve(import("@components/user-list.jsx")), 1500);
+    })
+  );
 
   const mockUsers = [
     {
@@ -152,10 +157,23 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Lista de usuarios */}
             <div className="lg:col-span-2">
-              <UserListMicroFrontend
-                users={mockUsers}
-                onUserSelected={handleUserSelected}
-              />
+              <Suspense
+                fallback={
+                  <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+                    <div className="w-32 aspect-square rounded-full relative flex justify-center items-center animate-[spin_3s_linear_infinite] z-40 bg-[conic-gradient(white_0deg,white_300deg,transparent_270deg,transparent_360deg)] before:animate-[spin_2s_linear_infinite] before:absolute before:w-[60%] before:aspect-square before:rounded-full before:z-[80] before:bg-[conic-gradient(white_0deg,white_270deg,transparent_180deg,transparent_360deg)] after:absolute after:w-3/4 after:aspect-square after:rounded-full after:z-[60] after:animate-[spin_3s_linear_infinite] after:bg-[conic-gradient(#065f46_0deg,#065f46_180deg,transparent_180deg,transparent_360deg)]">
+                      <span className="absolute w-[85%] aspect-square rounded-full z-[60] animate-[spin_5s_linear_infinite] bg-[conic-gradient(#34d399_0deg,#34d399_180deg,transparent_180deg,transparent_360deg)]"></span>
+                    </div>
+                    <p className="text-sm text-gray-700 text-center">
+                      <span className="text-black font-medium">Cargando...</span> Por favor, espere
+                    </p>
+                  </div>
+                }
+              >
+                <UserListMicroFrontend
+                  users={mockUsers}
+                  onUserSelected={handleUserSelected}
+                />
+              </Suspense>
             </div>
 
             {/* Detalles de usuario */}
@@ -211,7 +229,7 @@ export default function App() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }
