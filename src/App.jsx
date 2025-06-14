@@ -15,6 +15,24 @@ export default function App() {
     })
   );
 
+  const roleAlternatives = [
+    "Administrador",
+    "Editor",
+    "Usuario",
+    "Moderador",
+    "Desarrollador",
+    "Diseñador",
+    "Gerente de proyecto",
+    "Analista de datos",
+    "Soporte técnico",
+    "Especialista en marketing digital",
+  ];
+
+  const getRandomRole = () => {
+    const randomIndex = Math.floor(Math.random() * roleAlternatives.length);
+    return roleAlternatives[randomIndex];
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       const res = await fetch("https://randomuser.me/api/?results=12&nat=us");
@@ -25,7 +43,7 @@ export default function App() {
         name: `${user.name.first} ${user.name.last}`,
         email: user.email,
         avatar: user.picture.medium || ImgUser,
-        role: "Rol aleatorio",
+        role: getRandomRole(),
         location: `${user.location.city}, ${user.location.state}`,
         phone: user.phone,
         website: user.login.username + ".random.dev",
