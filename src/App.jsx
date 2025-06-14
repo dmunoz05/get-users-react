@@ -11,7 +11,7 @@ export default function App() {
 
   const UserListMicroFrontend = React.lazy(() =>
     new Promise(resolve => {
-      setTimeout(() => resolve(import("@components/user-list.jsx")), 1500);
+      setTimeout(() => resolve(import("@components/user-list.jsx")), 500);
     })
   );
 
