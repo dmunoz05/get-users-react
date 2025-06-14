@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/card";
 import { Badge } from "@ui/badge";
 import { Mail, MapPin, Phone, Globe } from "lucide-react";
@@ -7,6 +7,7 @@ import "./App.css";
 
 export default function App() {
   const [selectedUser, setSelectedUser] = useState();
+  const [mockUsers, setUsers] = useState([]);
 
   const UserListMicroFrontend = React.lazy(() =>
     new Promise(resolve => {
@@ -14,128 +15,27 @@ export default function App() {
     })
   );
 
-  const mockUsers = [
-    {
-      id: 1,
-      name: "Camila Rodríguez",
-      email: "camila.rodriguez@example.com",
-      avatar: ImgUser,
-      role: "Desarrolladora Frontend",
-      location: "Bogotá, Cundinamarca",
-      phone: "+57 301 234 5678",
-      website: "camilarod.dev",
-    },
-    {
-      id: 2,
-      name: "Juan Pérez",
-      email: "juan.perez@example.com",
-      avatar: ImgUser,
-      role: "Desarrollador Backend",
-      location: "Medellín, Antioquia",
-      phone: "+57 301 234 5678",
-      website: "juanbackend.co",
-    },
-    {
-      id: 3,
-      name: "Laura Gómez",
-      email: "laura.gomez@example.com",
-      avatar: ImgUser,
-      role: "Diseñadora UI/UX",
-      location: "Cali, Valle del Cauca",
-      phone: "+57 301 234 5678",
-      website: "lauragomez.design",
-    },
-    {
-      id: 4,
-      name: "Carlos Ramírez",
-      email: "carlos.ramirez@example.com",
-      avatar: ImgUser,
-      role: "Ingeniero DevOps",
-      location: "Barranquilla, Atlántico",
-      phone: "+57 301 234 5678",
-      website: "carlosdevops.com",
-    },
-    {
-      id: 5,
-      name: "Mariana Torres",
-      email: "mariana.torres@example.com",
-      avatar: ImgUser,
-      role: "Product Manager",
-      location: "Bucaramanga, Santander",
-      phone: "+57 301 234 5678",
-      website: "marianapm.co",
-    },
-    {
-      id: 6,
-      name: "Andrés Herrera",
-      email: "andres.herrera@example.com",
-      avatar: ImgUser,
-      role: "Científico de Datos",
-      location: "Pereira, Risaralda",
-      phone: "+57 301 234 5678",
-      website: "andresdata.com",
-    },
-    {
-      id: 7,
-      name: "Valentina Mejía",
-      email: "valentina.mejia@example.com",
-      avatar: ImgUser,
-      role: "Desarrolladora Mobile",
-      location: "Manizales, Caldas",
-      phone: "+57 301 234 5678",
-      website: "valentinamobile.co",
-    },
-    {
-      id: 8,
-      name: "Santiago López",
-      email: "santiago.lopez@example.com",
-      avatar: ImgUser,
-      role: "Ingeniero de Seguridad",
-      location: "Cartagena, Bolívar",
-      phone: "+57 301 234 5678",
-      website: "santiseguridad.com",
-    },
-    {
-      id: 9,
-      name: "Daniela Castro",
-      email: "daniela.castro@example.com",
-      avatar: ImgUser,
-      role: "Ingeniera QA",
-      location: "Ibagué, Tolima",
-      phone: "+57 301 234 5678",
-      website: "danielaqa.co",
-    },
-    {
-      id: 10,
-      name: "Felipe Martínez",
-      email: "felipe.martinez@example.com",
-      avatar: ImgUser,
-      role: "Desarrollador Full Stack",
-      location: "Villavicencio, Meta",
-      phone: "+57 301 234 5678",
-      website: "felipefs.dev",
-    },
-    {
-      id: 11,
-      name: "Natalia Ruiz",
-      email: "natalia.ruiz@example.com",
-      avatar: ImgUser,
-      role: "Redactora Técnica",
-      location: "Cúcuta, Norte de Santander",
-      phone: "+57 301 234 5678",
-      website: "nataliaruiz.tech",
-    },
-    {
-      id: 12,
-      name: "Sebastián Morales",
-      email: "sebastian.morales@example.com",
-      avatar: ImgUser,
-      role: "Arquitecto Cloud",
-      location: "Neiva, Huila",
-      phone: "+57 301 234 5678",
-      website: "sebcloud.com",
-    },
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await fetch("https://randomuser.me/api/?results=12&nat=us");
+      const data = await res.json();
+
+      const formatted = data.results.map((user, index) => ({
+        id: index + 1,
+        name: `${user.name.first} ${user.name.last}`,
+        email: user.email,
+        avatar: user.picture.medium || ImgUser,
+        role: "Rol aleatorio",
+        location: `${user.location.city}, ${user.location.state}`,
+        phone: user.phone,
+        website: user.login.username + ".random.dev",
+      }));
+
+      setUsers(formatted);
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleUserSelected = (user) => {
     setSelectedUser(user);
